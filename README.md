@@ -1,5 +1,7 @@
 ## Usage
-1. Create a `config.js` file containing:
+Make sure you have [NodeJS](http://nodejs.org) and [Nodemon](http://nodemon.io/) installed, with `npm i -g nodemon`.
+
+To get started you'll need to create a `config.js` file containing:
 ```
 module.exports = {
   mongodb: '<user>:<password>@<database-url>:<port>/<database>',
@@ -13,5 +15,6 @@ module.exports = {
 }
 ```
 
-2. `npm i`
-3. `npm start`
+1. `npm i` to install dependencies
+1. `npm start` to start the dev server with Nodemon and Babel
+1. `npm run build` when ready to move to production

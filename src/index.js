@@ -15,7 +15,7 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 // MongoDB
 import mongoose from 'mongoose';
 mongoose.connect(`mongodb://${config.mongodb}`);
-const User = mongoose.model('User', {name: String, email: String, username: String, provider: String, facebook: {name: String, id: String}});
+const User = mongoose.model('User', {name: String, username: String, provider: String, facebook: {name: String, id: String}});
 
 // Express config
 app.use(cookieParser());
@@ -52,7 +52,7 @@ passport.use(new FacebookStrategy({
       if (err) {
           return done(err);
       }
-    //No user was found... so create a new user with values from Facebook (all the profile. stuff)
+      //No user was found... so create a new user with values from Facebook (all the profile. stuff)
       if (!user) {
         user = new User({
           name: profile.displayName,
@@ -80,7 +80,7 @@ passport.use(new FacebookStrategy({
 
 app.get('/auth/facebook', passport.authenticate('facebook'));
 
-app.get('/auth/facebook/callback',passport.authenticate('facebook', {
+app.get('/auth/facebook/callback', passport.authenticate('facebook', {
   successRedirect: config.facebookSuccess,
   failureRedirect: config.facebookFail
 }));
