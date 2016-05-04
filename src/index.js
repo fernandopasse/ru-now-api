@@ -15,7 +15,6 @@ const io = require('socket.io')(server);
 const port = 8001 || process.env.PORT;
 const redis = new Redis(`redis://${config.redis}`);
 mongoose.connect(`mongodb://${config.mongodb}`);
-
 // Express config
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -24,7 +23,7 @@ app.use(passport.initialize());
 // Routes
 const router = require('./router')(app);
 // Passport Strategies
-require('./pass.js')(passport, FacebookStrategy, BearerStrategy);
+require('./pass.js')(passport, redis, FacebookStrategy, BearerStrategy);
 // Socket IO
 require('./sockets.js')(io);
 

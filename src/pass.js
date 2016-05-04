@@ -1,16 +1,13 @@
 import User from './models/User';
 import config from '../config';
 
-module.exports = (passport, FacebookStrategy, BearerStrategy) => {
+module.exports = (passport, redis, FacebookStrategy, BearerStrategy) => {
 
   passport.use(new BearerStrategy((token, done) => {
-    User.findOne({ access_token: token }, (err, user) => {
-      if(err) {
-        return done(err)
-      }
-      if(!user) {
-        return done(null, false)
-      }
+    redis.get(token, (err, user)  => {
+      console.log('UserId from redis: ', user);
+      if(err) { return done(err) }
+      if(!user) { return done(null, false) }
       return done(null, user, { scope: 'all' })
     });
   }));
@@ -18,7 +15,8 @@ module.exports = (passport, FacebookStrategy, BearerStrategy) => {
   passport.use(new FacebookStrategy({
       clientID: config.clientID,
       clientSecret: config.clientSecret,
-      callbackURL: config.facebookCallback
+      callbackURL: config.facebookCallback,
+      profileFields: ['id', 'displayName', 'picture', 'email', 'first_name', 'profileUrl']
     },
     (accessToken, refreshToken, profile, done) => {
       User.findOne({ 'facebook.id': profile.id }, (err, user) => {
@@ -28,24 +26,31 @@ module.exports = (passport, FacebookStrategy, BearerStrategy) => {
         //No user was found... so create a new user with values from Facebook (all the profile. stuff)
         if (!user) {
           user = new User({
-            name: profile.displayName,
-            username: profile.username,
+            name: profile.name.givenName,
+            email: profile.emails[0].value,
+            profileUrl: profile.profileUrl,
+            avatar: profile.photos[0].value,
             provider: 'facebook',
-            access_token: accessToken,
             //now in the future searching on User.findOne({'facebook.id': profile.id } will match because of this next line
             facebook: profile._json
           });
           user.save((err) => {
-            console.log("ERROR FACEBOOK SAVE");
+            redis.set(accessToken, profile.id, (err) => {
+              if (err) console.log(err);
+            })
             if (err) console.log(err);
+            user.access_token = accessToken;
             return done(err, user);
           });
         } else {
           //found user. Return
-          console.log("USER IS LOGGED: ", user);
+          user.access_token = accessToken;
+          console.log('-----------------------------');
+          console.log("User is logged: ", user);
+          console.log('-----------------------------');
           return done(err, user);
         }
-          });
+      });
     }
   ));
 }

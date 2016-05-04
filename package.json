@@ -24,7 +24,8 @@
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.0",
     "passport-http-bearer": "^1.0.1",
-    "socket.io": "^1.4.5"
+    "socket.io": "^1.4.5",
+    "whitespace-remove": "^1.0.2"
   },
   "devDependencies": {
     "babel-cli": "^6.7.7",
