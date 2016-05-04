@@ -17,15 +17,13 @@
     "cookie-parser": "^1.4.1",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
-    "ioredis": "^1.15.1",
     "jsonwebtoken": "^6.2.0",
     "mongoose": "^4.4.14",
     "mongoose-findorcreate": "^0.1.2",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.0",
     "passport-http-bearer": "^1.0.1",
-    "socket.io": "^1.4.5",
-    "whitespace-remove": "^1.0.2"
+    "socket.io": "^1.4.5"
   },
   "devDependencies": {
     "babel-cli": "^6.7.7",
